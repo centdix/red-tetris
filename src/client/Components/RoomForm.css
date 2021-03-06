@@ -1,0 +1,22 @@
+.RoomForm {
+	max-height: 35%;
+}
+
+.TitleCreate {
+	font-size: 1.25em;
+	font-weight: 700;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+.CreateButton {
+	width: 20%;
+}
+
+.ModeButtons {
+}
+
+.Buttons {
+	display: flex;
+	margin-top: 10px;
+}

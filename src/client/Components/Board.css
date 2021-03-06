@@ -1,0 +1,88 @@
+.BoardBox {
+	display: flex;
+}
+
+.UserBoard {
+	display: flex;
+	flex-direction: column;
+	border: solid;
+	width: 35vh;
+	height: 70vh;
+}
+
+.Board {
+	display: flex;
+	flex-direction: column;
+	border: solid;
+	width: 20vh;
+	height: 40vh;
+}
+
+.NextPiece {
+	display: flex;
+	flex-direction: column;
+	width: 10vh;
+	height: 10vh;
+	margin: 5px;
+	border: solid;
+}
+
+.Row {
+	display: flex;
+	flex-direction: row;
+	height: 10%;
+}
+
+.RowNP {
+	display: flex;
+	flex-direction: row;
+	height: 25%;
+}
+
+.Cell {
+	display: flex;
+	flex-basis: 10%;
+}
+
+.Shadow {
+	opacity: 0.1;
+}
+
+.CellNP {
+	display: flex;
+	flex-basis: 25%;
+}
+
+.filled {
+	background-color: black;
+	border: outset;
+	border-width: 1px;
+}
+
+.cyan {
+	background-color: cyan;
+}
+
+.blue {
+	background-color: blue;
+}
+
+.orange {
+	background-color: orange;
+}
+
+.yellow {
+	background-color: yellow;
+}
+
+.green {
+	background-color: green;
+}
+
+.purple {
+	background-color: purple;
+}
+
+.red {
+	background-color: red;
+}

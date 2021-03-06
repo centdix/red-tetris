@@ -1,0 +1,21 @@
+.Header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	grid-area: header;
+	padding: 1em;
+}
+
+.BackButton {
+	position: absolute !important;
+	left: 10px !important;
+}
+
+.Title {
+	font-size: 30px;
+}
+
+.LogText {
+	position: absolute;
+	right: 10px;
+}

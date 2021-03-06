@@ -1,0 +1,27 @@
+.Chat {
+	display: flex;
+	grid-area: chat;
+	padding: 10px 10px 10px 0px;
+}
+
+.Msg {
+	margin: 5px;
+	font-size: 14px;
+}
+
+.ChatBox {
+	height: 100%;
+	display: flex !important;
+	flex-direction: column;
+}
+
+.Messages {
+	flex-grow: 1;
+	overflow: scroll;
+	margin-bottom: 10px;
+}
+
+.MsgInput {
+	align-self: center;
+	width: 100%;
+}

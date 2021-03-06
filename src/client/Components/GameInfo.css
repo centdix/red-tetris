@@ -1,0 +1,18 @@
+.GameInfo {
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	height: 100%;
+	margin: auto;
+	justify-content: center;
+}
+
+.Message {
+	font-size: xx-large;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.PlayerBlock {
+	justify-content: space-between !important;
+}
