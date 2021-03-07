@@ -4,7 +4,6 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import socketIOClient from "socket.io-client";
 import Header from './Components/Header';
-import Chat from './Components/Chat';
 import Main from './Components/Main';
 import LoginPage from './Pages/LoginPage';
 
@@ -87,12 +86,10 @@ function App(props) {
   }
 
   let header = null;
-  let chat = null;
   let main = <LoginPage onLogin={handleLogin}></LoginPage>;
 
   if (user.login) {
     header = <Header goBack={handleGoBack} user={user}></Header>;
-    chat = <Chat user={user}></Chat>;
     main = <Main 
         page={page}
         user={user}
@@ -104,7 +101,6 @@ function App(props) {
   return (
     <div className="App">
       {header}
-      {chat}
       {main}
       <ToastContainer />
     </div>

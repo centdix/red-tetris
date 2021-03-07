@@ -9,6 +9,8 @@
   "scripts": {
     "client-dev": "webpack serve",
     "serv-dev": "babel-watch -w src/server src/server/index.js",
+    "client-prod": "webpack",
+    "serv-prod": "node src/server/index.js",
     "test": "mocha",
     "coverage": "nyc mocha"
   },

@@ -24,7 +24,7 @@ class Board {
 		this.filledLines = 0;
 		this.needPiece = false;
 		this.status = 'empty';
-		this.speed = 2;
+		this.speed = 1;
 		this.tick = 0;
 		this.boardMap = [];
 	}
@@ -36,6 +36,7 @@ class Board {
 		this.shadowPiece = {};
 		this.nextPiece = null;
 		this.pieceIndex = 0;
+		this.filledLines = 0;
 		this.needPiece = false;
 		this.status = 'empty';
 		this.speed = 1;
@@ -109,6 +110,10 @@ class Board {
 				this.boardMap[this.h - number][j] = 9;
 			}
 		}
+	}
+
+	clearFilledLines() {
+		this.filledLines = 0;
 	}
 
 	update() {

@@ -1,0 +1,28 @@
+.GameCommands {
+	display: flex;
+	width: 100%;
+	height: 10%;
+}
+
+.command {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	align-items: center;
+}
+
+.commandImage {
+	height: 50%;
+}
+
+.right {
+	transform: rotate(180deg);
+}
+
+.up {
+	transform: rotate(90deg);
+}
+
+.down {
+	transform: rotate(270deg);
+}

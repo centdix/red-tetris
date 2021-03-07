@@ -100,8 +100,10 @@ class Game {
 			if (p.board.status === 'filled')
 				alive--;
 			else {
-				if (p.board.filledLines > 1)
+				if (p.board.filledLines > 1){
 					this.sendExtraLines(p, p.board.filledLines - 1);
+					p.board.clearFilledLines();
+				}
 				p.board.update();
 				if (p.board.needPiece) {
 					let index = p.board.pieceIndex;
