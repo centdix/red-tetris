@@ -111,14 +111,8 @@ function App(props) {
 
 let socket;
 
-if (typeof(process.env.PORT) !== 'undefined') {
-  //prod
-  socket = socketIOClient();
-}
-else {
-  //dev
-  socket = socketIOClient("http://localhost:3000");
-}
+socket = socketIOClient();
+// socket = socketIOClient("http://localhost:3000");
 
 ReactDOM.render(
   <App socket={socket}/>,
