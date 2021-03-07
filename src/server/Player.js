@@ -11,8 +11,8 @@ class Player {
 	}
 
 	setRoom(room) {
-		if (typeof(room) !== 'string')
-			throw Error("arg should be string");
+		if (room !== null && typeof(room) !== 'string')
+			throw Error("arg should be string or null");
 		this.room = room;
 	}
 

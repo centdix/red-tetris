@@ -5,7 +5,7 @@
 .UserBoard {
 	display: flex;
 	flex-direction: column;
-	border: solid;
+	box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1);
 	width: 35vh;
 	height: 70vh;
 }
@@ -13,7 +13,7 @@
 .Board {
 	display: flex;
 	flex-direction: column;
-	border: solid;
+	box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1);
 	width: 20vh;
 	height: 40vh;
 }
@@ -24,7 +24,7 @@
 	width: 10vh;
 	height: 10vh;
 	margin: 5px;
-	border: solid;
+	box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1);	
 }
 
 .Row {
@@ -42,15 +42,23 @@
 .Cell {
 	display: flex;
 	flex-basis: 10%;
+	border: solid;
+	border-color: white;
+	border-width: 1px;
+	background-color: rgba(100, 100, 100, 0.1);
 }
 
 .Shadow {
-	opacity: 0.1;
+	opacity: 0.2;
 }
 
 .CellNP {
 	display: flex;
 	flex-basis: 25%;
+	border: solid;
+	border-color: white;
+	border-width: 1px;
+	background-color: rgba(100, 100, 100, 0.1);
 }
 
 .filled {
@@ -85,4 +93,12 @@
 
 .red {
 	background-color: red;
+}
+
+.grey {
+	background-color: grey;
+}
+
+.black {
+	background-color: black;
 }

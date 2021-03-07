@@ -1,5 +1,7 @@
 .RoomForm {
 	max-height: 35%;
+	width: 50%;
+	align-self: center;
 }
 
 .TitleCreate {

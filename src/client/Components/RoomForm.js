@@ -12,7 +12,7 @@ function RoomForm(props) {
 
 	function handleKey(e) {
 		if (e.key === 'Enter') {
-			props.onCreateRoom(inputValue);
+			props.onCreateRoom(inputValue, modeValue);
 		}
 	}
 

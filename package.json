@@ -8,7 +8,7 @@
   },
   "scripts": {
     "client-dev": "webpack serve",
-    "serv-dev": "babel-watch -w src src/server/index.js",
+    "serv-dev": "babel-watch -w src/server src/server/index.js",
     "test": "mocha",
     "coverage": "nyc mocha"
   },
@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-toastify": "^7.0.3",
     "socket.io": "^3.1.2",
     "socket.io-client": "^3.1.2"
   },
@@ -31,6 +32,7 @@
     "chai": "^4.3.3",
     "css-loader": "^5.1.1",
     "eslint": "^7.21.0",
+    "jsdom": "^16.4.0",
     "mocha": "^8.3.0",
     "nyc": "^15.1.0",
     "style-loader": "^2.0.0",

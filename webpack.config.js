@@ -1,4 +1,5 @@
-var path = require('path');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 
@@ -23,7 +24,17 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
       },
-    ]
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/,
+        type: 'asset/resource',
+      },
+    ],
   },
+
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.PORT': JSON.stringify(process.env.PORT),
+    })
+  ]
 
 };

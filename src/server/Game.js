@@ -57,11 +57,32 @@ class Game {
 		}
 	}
 
+	pickWinner() {
+		let winner = null;
+		for (let i = 0; i < this.players.length; i++) {
+			if (this.players[i].board.status === 'filling')
+				winner = this.players[i];
+		}
+		this.winner = winner;
+	}
+
+	setPiecesInQueue(index) {
+		this.typesInQueue[index] = Game.generatePieceType();
+		this.typesInQueue[index + 1] = Game.generatePieceType();
+		this.typesInQueue[index + 2] = null;
+	}
+
+	sendExtraLines(fromPlayer, number) {
+		this.players.forEach((p) => {
+			if (p.id !== fromPlayer.id && p.board.status === 'filling') {
+				p.board.addExtraLines(number);
+			}
+		})
+	}
+
 	start() {
 		this.status = 'running';
-		this.typesInQueue[0] = Game.generatePieceType();
-		this.typesInQueue[1] = Game.generatePieceType();
-		this.typesInQueue[2] = null;
+		this.setPiecesInQueue(0);
 		this.players.forEach((p) => {
 			p.board.init(10, 20);
 			let index = p.board.pieceIndex;
@@ -70,7 +91,7 @@ class Game {
 		this.interval = setInterval(() => {
 			this.updateState();
 			this.sendState();
-		}, 200);
+		}, 60);
 	}
 
 	updateState() {
@@ -79,13 +100,13 @@ class Game {
 			if (p.board.status === 'filled')
 				alive--;
 			else {
+				if (p.board.filledLines > 1)
+					this.sendExtraLines(p, p.board.filledLines - 1);
 				p.board.update();
 				if (p.board.needPiece) {
 					let index = p.board.pieceIndex;
 					if (this.typesInQueue[index + 1] === null) {
-						this.typesInQueue[index + 1] = Game.generatePieceType();
-						this.typesInQueue[index + 2] = Game.generatePieceType();
-						this.typesInQueue[index + 3] = null;
+						this.setPiecesInQueue(index + 1);
 					}
 					p.board.setPieces(this.typesInQueue[index], this.typesInQueue[index + 1]);
 				}
@@ -96,12 +117,7 @@ class Game {
 			this.sendState();
 		}
 		else if (this.players.length > 1 && alive === 1) {
-			let winner = null;
-			for (let i = 0; i < this.players.length; i++) {
-				if (this.players[i].board.status === 'filling')
-					winner = this.players[i];
-			}
-			this.winner = winner;
+			this.pickWinner();
 			this.stop();
 			this.sendState();
 		}

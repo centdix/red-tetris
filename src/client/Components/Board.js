@@ -1,7 +1,7 @@
 import React from 'react';
 import './Board.css'
 
-const colors = ['', '', 'red', 'green', 'yellow', 'purple', 'orange', 'blue', 'cyan'];
+const colors = ['', '', 'red', 'green', 'yellow', 'purple', 'orange', 'blue', 'cyan', 'grey'];
 
 function Board(props) {
 

@@ -9,7 +9,8 @@ const colors = {
 	purple: 5,
 	orange: 6,
 	blue: 7,
-	cyan: 8
+	cyan: 8,
+	grey: 9
 };
 
 class Board {
@@ -20,8 +21,11 @@ class Board {
 		this.shadowPiece = {};
 		this.nextPiece = null;
 		this.pieceIndex = 0;
+		this.filledLines = 0;
 		this.needPiece = false;
 		this.status = 'empty';
+		this.speed = 2;
+		this.tick = 0;
 		this.boardMap = [];
 	}
 
@@ -34,6 +38,8 @@ class Board {
 		this.pieceIndex = 0;
 		this.needPiece = false;
 		this.status = 'empty';
+		this.speed = 1;
+		this.tick = 0;
 		for (let i = 0; i < this.h; i++) {
 			this.boardMap[i] = new Array(this.w);
 			for (let j = 0; j < this.w; j++) {
@@ -77,27 +83,45 @@ class Board {
 	}
 
 	removeFilledLines() {
+		let filledLines = 0;
 		for (let x = 0; x < this.h; x++) {
 			for (var y = 0; y < this.w; y++) {
-				if (this.boardMap[x][y] === 0)
+				if (this.boardMap[x][y] === 0 || this.boardMap[x][y] === 9)
 					break ;
 			}
 			if (y === this.w)
 			{
+				filledLines++;
 				for (let i = x; i >= 1; i--) {
 					this.boardMap[i] = this.boardMap[i - 1];
 				}
 			}
 		}
+		this.filledLines = filledLines;
+	}
+
+	addExtraLines(number) {
+		for (let i = 0; i < this.h - number; i++) {
+			this.boardMap[i] = this.boardMap[i + number];
+		}
+		for (let i = 0; i < number; i++) {
+			for (let j = 0; j < this.w; j++) {
+				this.boardMap[this.h - number][j] = 9;
+			}
+		}
 	}
 
 	update() {
+		this.tick += 1;
 		this.status = 'filling';
-		this.fallingPiece.goDown();
+		if (this.tick % Math.round(10 / this.speed) === 0) 
+			this.fallingPiece.goDown();
+		if (this.tick % 100 === 0)
+			this.speed += this.speed / 20;
 		this.shadowPiece = new Piece();
 		this.shadowPiece.pos = {...this.fallingPiece.pos};
 		this.shadowPiece.blocks = [...this.fallingPiece.blocks];
-		this.shadowPiece.color = this.fallingPiece.color;
+		this.shadowPiece.color = 'black';
 		while (Piece.collide(this.shadowPiece, this) === false)
 			this.shadowPiece.pos.y += 1;
 		if (Piece.collide(this.fallingPiece, this)) {

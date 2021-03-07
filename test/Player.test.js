@@ -7,7 +7,7 @@ describe('Player', () => {
 	describe('setting room', () => {
 		var player = new Player();
 
-		it('throws error if arg is not a string', () => {
+		it('throws error if arg is not string or null', () => {
 			expect(() => player.setRoom(1)).to.throw();
 		});
 		it('sets room', () => {

@@ -113,10 +113,6 @@ class Piece {
 			x: 5,
 			y: -4,
 		};
-		this.vel = {
-			x: 0,
-			y: 1,
-		}
 		this.blocks = [
 			[0,0,0,0],
 			[0,0,0,0],
