@@ -57,7 +57,7 @@ function GamePage(props) {
 				return (
 					<div key={p.login} className="BoardContainer">
 						<Board player={p} user={props.user}></Board>
-						<span>{p.login}</span>
+						<p className="Login">{p.login}</p>
 					</div>
 				);
 			})

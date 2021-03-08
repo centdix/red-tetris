@@ -13,5 +13,11 @@
 }
 
 .BoardContainer {
-	margin: 5px;
+	margin: 10px;
+}
+
+.Login {
+	width: 80%;
+	text-align: center;
+	font-weight: bold;
 }

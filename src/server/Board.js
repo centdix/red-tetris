@@ -50,6 +50,7 @@ class Board {
 	}
 
 	setPieces(fallingType, nextType) {
+		console.log('called');
 		this.fallingPiece = Piece.generate(fallingType);
 		this.nextPiece = Piece.generate(nextType);
 		this.needPiece = false;
@@ -103,11 +104,11 @@ class Board {
 
 	addExtraLines(number) {
 		for (let i = 0; i < this.h - number; i++) {
-			this.boardMap[i] = this.boardMap[i + number];
+			this.boardMap[i] = [...this.boardMap[i + number]];
 		}
 		for (let i = 0; i < number; i++) {
 			for (let j = 0; j < this.w; j++) {
-				this.boardMap[this.h - number][j] = 9;
+				this.boardMap[this.h - 1 - i][j] = 9;
 			}
 		}
 	}
