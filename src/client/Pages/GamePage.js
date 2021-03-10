@@ -47,27 +47,42 @@ function GamePage(props) {
 		};
 	}, [gameData, handleKey, props.user.socket]);
 
-	let boardsOrGameInfo = null;
+	let info = null;
+	let boards = null;
+	let showInfo = true;
+	let hash = window.location.hash;
+	let roomName = hash.slice(0, hash.indexOf('['));
 	if (gameData) {
-		if (gameData.status !== 'running') {
-			boardsOrGameInfo = <GameInfo user={props.user} gameData={gameData}></GameInfo>;
-		}
-		else {
-			boardsOrGameInfo = gameData.players.map((p) => {
-				return (
-					<div key={p.login} className="BoardContainer">
-						<Board player={p} user={props.user}></Board>
-						<p className="Login">{p.login}</p>
+		if (gameData.status === 'running')
+			showInfo = false;
+		else
+			showInfo = true;
+		info = <GameInfo user={props.user} gameData={gameData} show={showInfo}></GameInfo>
+		boards = gameData.players.map((p) => {
+			let loginClass = "Login";
+			let hostTag = null;
+			if (p.id === props.user.socket.id)
+				loginClass = "UserLogin";
+			if (gameData.owner.id === p.id)
+				hostTag = <span class="tag is-primary">Host</span>;
+			return (
+				<div key={p.login} className="BoardContainer">
+					<Board player={p} user={props.user}></Board>
+					<div className={loginClass}>
+						{p.login}
+						{hostTag}
 					</div>
-				);
-			})
-		}
+				</div>
+			);
+		})
 	}
 
 	return (
 	    <div className="GamePage">
 	    	<div className="GameMain">
-		    	{boardsOrGameInfo}
+	    		<span className="RoomName">{roomName}</span>
+	    		{info}
+	    		{boards}
 		    </div>
 		    <GameCommands></GameCommands>
 	    </div>

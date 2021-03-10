@@ -1,18 +1,13 @@
-.GameInfo {
-	display: flex;
-	flex-direction: column;
-	width: 50%;
-	height: 100%;
-	margin: auto;
-	justify-content: center;
-}
-
-.Message {
-	font-size: xx-large;
+.Banner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0.9;
+	width: 100%;
 	text-align: center;
-	margin-bottom: 10px;
 }
 
-.PlayerBlock {
-	justify-content: space-between !important;
+.Hidden {
+	display: none !important;
 }

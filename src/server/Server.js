@@ -168,6 +168,13 @@ class Server {
 					})
 					return ;
 				}
+				if (game.status === 'running') {
+					callback({
+						status: 'error',
+						message: 'This game has already started'
+					})
+					return ;
+				}
 				if (game.players.indexOf(p) === -1) {
 					socket.join(room);
 					p.setRoom(room);

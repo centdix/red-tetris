@@ -111,8 +111,8 @@ function App(props) {
 
 let socket;
 
-socket = socketIOClient();
-// socket = socketIOClient("http://localhost:3000");
+// socket = socketIOClient();
+socket = socketIOClient("http://localhost:3000");
 
 ReactDOM.render(
   <App socket={socket}/>,

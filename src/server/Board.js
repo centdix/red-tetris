@@ -50,7 +50,6 @@ class Board {
 	}
 
 	setPieces(fallingType, nextType) {
-		console.log('called');
 		this.fallingPiece = Piece.generate(fallingType);
 		this.nextPiece = Piece.generate(nextType);
 		this.needPiece = false;

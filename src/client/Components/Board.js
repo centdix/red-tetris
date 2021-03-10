@@ -49,6 +49,8 @@ function Board(props) {
 	}
 
 	let boardClass = "Board";
+	if (props.player && props.player.login === props.user.login)
+		boardClass = "UserBoard";
 	let nextPiece = null;
 	let renderedBoard = null;
 	let nextPieceRows = [];
@@ -67,7 +69,6 @@ function Board(props) {
 		tmp.pos.x = 0;
 		tmp.pos.y = 0;
 		if (props.player.login === props.user.login) {
-			boardClass = "UserBoard";
 			nextPiece = renderPiece(nextPieceRows, tmp, "CellNP").map((r, i) => {
 				return (
 					<div key={i} className="RowNP">
