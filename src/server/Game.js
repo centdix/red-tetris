@@ -25,8 +25,7 @@ class Game {
 		}
 	}
 
-	constructor(io, owner, room, mode) {
-		this.io = io;
+	constructor(owner, room, mode) {
 		this.owner = owner;
 		this.room = room;
 		this.mode = mode;
@@ -35,7 +34,6 @@ class Game {
 		this.typesInQueue = [];
 		this.status = 'standby';
 		this.winner = null;
-		this.interval = null;
 	}
 
 	addPlayer(player) {
@@ -88,10 +86,6 @@ class Game {
 			let index = p.board.pieceIndex;
 			p.board.setPieces(this.typesInQueue[index], this.typesInQueue[index + 1]);
 		});
-		this.interval = setInterval(() => {
-			this.updateState();
-			this.sendState();
-		}, 60);
 	}
 
 	updateState() {
@@ -116,23 +110,15 @@ class Game {
 		});
 		if (this.players.length === 1 && this.players[0].board.status === 'filled') {
 			this.stop();
-			this.sendState();
 		}
 		else if (this.players.length > 1 && alive === 1) {
 			this.pickWinner();
 			this.stop();
-			this.sendState();
 		}
 	}
 
 	stop() {
 		this.status = 'finished';
-		clearInterval(this.interval);
-		this.interval = null;
-	}
-
-	sendState() {
-		this.io.to(this.room).emit('gameState', this.getInfo());
 	}
 
 	getInfo() {

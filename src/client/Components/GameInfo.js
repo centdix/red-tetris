@@ -19,18 +19,15 @@ function GameInfo(props) {
 		}
 	}
 	else if (props.gameData.status === 'finished') {
-		if (props.gameData.players.length > 1) {
-			title = "GAME OVER !"
+		title = "GAME OVER !"	
+		if (props.gameData.winner)
 			subtitle = "The winner is " + props.gameData.winner.login + " ! ";
-			if (props.gameData.owner.login === props.user.login)
-				subtitle += "Press enter to start again"
-			else
-				subtitle += "Waiting for host to start again..."
-		}
-		else {
-			title = "GAME OVER !"
-			subtitle = "Press enter to start again"
-		}
+		else
+			subtitle = "";
+		if (props.gameData.owner.login === props.user.login)
+			subtitle += "Press ENTER to start again"
+		else
+			subtitle += "Waiting for host to start again..."
 	}
 
 	return (

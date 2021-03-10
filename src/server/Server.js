@@ -9,6 +9,7 @@ class Server {
 		this.io = io;
 		this.games = [];
 		this.players = [];
+		this.intervals = {};
 	}
 
 	removePlayerFromGame(game, player) {
@@ -48,41 +49,9 @@ class Server {
 				}
 				const p = new Player(socket.id, login);
 				this.players.push(p);
-				const msg = login + " just joined !";
-				this.io.emit('chatMsg', msg);
 				callback({
 					status: 'ok'
 				});
-			})
-
-			socket.on('clientMsg', (msg, callback) => {
-				const p = this.players.find(p => p.id === socket.id);
-				if (typeof(p) === 'undefined') {
-					callback({
-						status: 'error',
-						message: 'User is not logged in'
-					});
-					return ;
-				}
-				if (typeof(msg) !== 'string') {
-					callback({
-						status: 'error',
-						message: 'Invalid data type'
-					});
-					return ;
-				}
-				if (msg.length < 1) {
-					callback({
-						status: 'error',
-						message: 'Message can\'t be empty'
-					});
-					return ;
-				}
-				const message = p.login + ": " + msg;
-				this.io.emit('chatMsg', message);
-				callback({
-					status: 'ok'
-				})
 			})
 
 			socket.on('getRooms', (data) => {
@@ -128,7 +97,7 @@ class Server {
 				}
 				p.setRoom(room);
 				socket.join(room);
-				const game = new Game(this.io, p, room, mode);
+				const game = new Game(p, room, mode);
 				this.games.push(game);
 				socket.broadcast.emit('games', this.games.map(g => g.getInfo()));
 				this.io.to(room).emit('gameState', game.getInfo());
@@ -179,8 +148,6 @@ class Server {
 					socket.join(room);
 					p.setRoom(room);
 					game.addPlayer(p);
-					const msg = p.login + " joined " + room;
-					this.io.emit('chatMsg', msg);
 				}
 				this.io.to(room).emit('gameState', game.getInfo());
 				callback({
@@ -213,9 +180,16 @@ class Server {
 				const p = this.players.find(p => p.id === socket.id) 
 				const game = this.games.find(g => g.room === p.room);
 				if (game && game.owner.id === socket.id) {
-					const msg = p.login + " started a game !";
-					this.io.emit('chatMsg', msg);
 					game.start();
+					this.io.emit('games', this.games.map(g => g.getInfo()));
+					this.intervals[game.room] = setInterval(() => {
+						game.updateState();
+						this.io.to(game.room).emit('gameState', game.getInfo());
+						if (game.status === 'finished') {
+							clearInterval(this.intervals[game.room]);
+							this.io.emit('games', this.games.map(g => g.getInfo()));
+						}
+					}, 60);
 				}
 			})
 
@@ -247,8 +221,6 @@ class Server {
 						this.removePlayerFromGame(game, p);
 						this.io.emit('games', this.games.map(g => g.getInfo()));
 					}
-					const msg = p.login + " just left.";
-					this.io.emit('chatMsg', msg);
 					const index = this.players.indexOf(p);
 					this.players.splice(index, 1);
 				}
