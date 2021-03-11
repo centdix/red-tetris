@@ -1,6 +1,7 @@
 'use strict';
 
 const Piece = require('./Piece.js');
+const EVENTS = require('../common/Events.js');
 
 const colors = {
 	red: 2,
@@ -14,22 +15,7 @@ const colors = {
 };
 
 class Board {
-	constructor() {
-		this.w = 10;
-		this.h = 20;
-		this.fallingPiece = null;
-		this.shadowPiece = {};
-		this.nextPiece = null;
-		this.pieceIndex = 0;
-		this.filledLines = 0;
-		this.needPiece = false;
-		this.status = 'empty';
-		this.speed = 1;
-		this.tick = 0;
-		this.boardMap = [];
-	}
-
-	init(width, height) {
+	constructor(width, height) {
 		this.w = width;
 		this.h = height;
 		this.fallingPiece = null;
@@ -41,6 +27,8 @@ class Board {
 		this.status = 'empty';
 		this.speed = 1;
 		this.tick = 0;
+		this.inputs = [];
+		this.boardMap = [];
 		for (let i = 0; i < this.h; i++) {
 			this.boardMap[i] = new Array(this.w);
 			for (let j = 0; j < this.w; j++) {
@@ -55,32 +43,46 @@ class Board {
 		this.needPiece = false;
 	}
 
-	movePieceRight() {
-		let copy = this.fallingPiece.rightCopy();
-		if (Piece.collide(copy, this))
-			return ;
-		this.fallingPiece.moveRight();
+	addInput(input) {
+		this.inputs.push(input);
 	}
 
-	movePieceLeft() {
-		let copy = this.fallingPiece.leftCopy();
-		if (Piece.collide(copy, this))
-			return ;
-		this.fallingPiece.moveLeft();
-	}
-
-	rotatePiece() {
-		let copy = this.fallingPiece.rotateCopy();
-		if (Piece.collide(copy, this))
-			return ;
-		this.fallingPiece.rotate();
-	}
-
-	speedUpPiece() {
-		let copy = this.fallingPiece.downCopy();
-		if (Piece.collide(copy, this))
-			return ;
-		this.fallingPiece.goDown();
+	processInputs() {
+		let copy = null;
+		for (let i = 0; i < this.inputs.length; i++) {
+			switch(this.inputs[i]) {
+				case EVENTS['GO_RIGHT']:
+					copy = {...this.fallingPiece};
+					copy.pos = {...this.fallingPiece.pos};
+					copy.pos.x += 1;
+ 					if (Piece.collide(copy, this) === false)
+ 						this.fallingPiece.moveRight();
+					break;
+				case EVENTS['GO_LEFT']:
+					copy = {...this.fallingPiece};
+					copy.pos = {...this.fallingPiece.pos};
+					copy.pos.x -= 1;
+ 					if (Piece.collide(copy, this) === false)
+ 						this.fallingPiece.moveLeft();
+					break;
+				case EVENTS['GO_DOWN']:
+					copy = {...this.fallingPiece};
+					copy.pos = {...this.fallingPiece.pos};
+					copy.pos.y += 1;
+					if (Piece.collide(copy, this)) {
+						this.inputs = [];
+					}
+					this.fallingPiece.goDown();
+					break;
+				case EVENTS['ROTATE']:
+					copy = this.fallingPiece.rotateCopy();
+ 					if (Piece.collide(copy, this) === false)
+ 						this.fallingPiece.rotate();
+					break;
+				default:
+			}
+		}
+		this.inputs = [];
 	}
 
 	removeFilledLines() {
@@ -107,7 +109,7 @@ class Board {
 		}
 		for (let i = 0; i < number; i++) {
 			for (let j = 0; j < this.w; j++) {
-				this.boardMap[this.h - 1 - i][j] = 9;
+				this.boardMap[this.h - 1 - i][j] = colors['grey'];
 			}
 		}
 	}
@@ -117,10 +119,12 @@ class Board {
 	}
 
 	update() {
+		this.processInputs();
 		this.tick += 1;
 		this.status = 'filling';
 		if (this.tick % Math.round(10 / this.speed) === 0) 
-			this.fallingPiece.goDown();
+			if (Piece.collide(this.fallingPiece, this) === false)
+				this.fallingPiece.goDown();
 		if (this.tick % 100 === 0)
 			this.speed += this.speed / 20;
 		this.shadowPiece = new Piece();

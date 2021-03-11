@@ -7,7 +7,7 @@ class Player {
 		this.id = id;
 		this.login = login;
 		this.room = null;
-		this.board = new Board();
+		this.board = new Board(10, 20);
 	}
 
 	setRoom(room) {

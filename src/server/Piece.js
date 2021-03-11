@@ -121,39 +121,6 @@ class Piece {
 		]
 	}
 
-	rightCopy() {
-		return ({
-			pos: {
-				x: this.pos.x + 1,
-				y: this.pos.y
-			},
-			vel: {...this.vel},
-			blocks: [...this.blocks]
-		})
-	}
-
-	leftCopy() {
-		return ({
-			pos: {
-				x: this.pos.x - 1,
-				y: this.pos.y
-			},
-			vel: {...this.vel},
-			blocks: [...this.blocks]
-		})
-	}
-
-	downCopy() {
-		return ({
-			pos: {
-				x: this.pos.x,
-				y: this.pos.y + 1
-			},
-			vel: {...this.vel},
-			blocks: [...this.blocks]
-		})
-	}
-
 	rotateCopy() {
 		let newArray = new Array(4);
 		for (let i = 0; i < 4; i++) {
@@ -167,7 +134,6 @@ class Piece {
 				x: this.pos.x,
 				y: this.pos.y
 			},
-			vel: {...this.vel},
 			blocks: [...newArray]
 		})
 	}

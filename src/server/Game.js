@@ -2,6 +2,7 @@
 
 const Piece = require('./Piece.js');
 const Player = require('./Player.js');
+const Board = require('./Board.js');
 const io = require('socket.io');
 
 class Game {
@@ -82,7 +83,7 @@ class Game {
 		this.status = 'running';
 		this.setPiecesInQueue(0);
 		this.players.forEach((p) => {
-			p.board.init(10, 20);
+			p.board = new Board(10, 20);
 			let index = p.board.pieceIndex;
 			p.board.setPieces(this.typesInQueue[index], this.typesInQueue[index + 1]);
 		});

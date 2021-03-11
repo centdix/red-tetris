@@ -6,6 +6,7 @@ import socketIOClient from "socket.io-client";
 import Header from './Components/Header';
 import Main from './Components/Main';
 import LoginPage from './Pages/LoginPage';
+import EVENTS from '../common/Events.js';
 
 import './bulma.css';
 import './index.css';
@@ -36,7 +37,7 @@ function App(props) {
         setPage('login');
         break ;
       case 'game':
-        user.socket.emit('leaveRoom');
+        user.socket.emit(EVENTS['LEAVE_ROOM']);
         setPage('rooms');
         break ;
       default:
@@ -44,7 +45,7 @@ function App(props) {
   }
 
   function handleLogin(login) {
-    user.socket.emit('login', login, (response) => {
+    user.socket.emit(EVENTS['LOGIN'], login, (response) => {
       if (response.status === 'error') {
         showError(response.message);
       }
@@ -60,7 +61,7 @@ function App(props) {
   }
 
   function handleRoomJoin(room) {
-    user.socket.emit('joinRoom', room, (response) => {
+    user.socket.emit(EVENTS['JOIN_ROOM'], room, (response) => {
       if (response.status === 'error') {
         showError(response.message);
       }
@@ -73,7 +74,7 @@ function App(props) {
   }
 
   function handleCreateRoom(room, mode) {
-    user.socket.emit('createRoom', room, mode, (response) => {
+    user.socket.emit(EVENTS['CREATE_ROOM'], room, mode, (response) => {
       if (response.status === 'error') {
         showError(response.message);
       }
@@ -111,8 +112,8 @@ function App(props) {
 
 let socket;
 
-socket = socketIOClient();
-// socket = socketIOClient("http://localhost:3000");
+// socket = socketIOClient();
+socket = socketIOClient("http://localhost:3000");
 
 ReactDOM.render(
   <App socket={socket}/>,

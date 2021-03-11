@@ -3,6 +3,7 @@
 const Player = require('./Player.js');
 const Game = require('./Game.js');
 const Board = require('./Board.js');
+const EVENTS = require('../common/Events.js');
 
 class Server {
 	constructor(io) {
@@ -24,7 +25,7 @@ class Server {
 
 		this.io.on('connection', (socket) => {
 			// console.log('user connection');
-			socket.on('login', (login, callback) => {
+			socket.on(EVENTS['LOGIN'], (login, callback) => {
 				if (typeof(login) !== 'string') {
 					callback({
 						status: 'error',
@@ -54,11 +55,11 @@ class Server {
 				});
 			})
 
-			socket.on('getRooms', (data) => {
+			socket.on(EVENTS['GET_ROOMS'], (data) => {
 				socket.emit('games', this.games.map(g => g.getInfo()));
 			})
 
-			socket.on('createRoom', (room, mode, callback) => {
+			socket.on(EVENTS['CREATE_ROOM'], (room, mode, callback) => {
 				const p = this.players.find(p => p.id === socket.id)
 				if (typeof(p) === 'undefined') {
 					callback({
@@ -106,7 +107,7 @@ class Server {
 				});
 			})
 
-			socket.on('joinRoom', (room, callback) => {
+			socket.on(EVENTS['JOIN_ROOM'], (room, callback) => {
 				const p = this.players.find(p => p.id === socket.id)
 				if (typeof(p) === 'undefined') {
 					callback({
@@ -193,24 +194,24 @@ class Server {
 				}
 			})
 
-			socket.on('goRight', () => {
+			socket.on(EVENTS['GO_RIGHT'], () => {
 				const p = this.players.find(p => p.id === socket.id) 
-				p.board.movePieceRight();
+				p.board.addInput(EVENTS['GO_RIGHT']);
 			})
 
-			socket.on('goLeft', () => {
+			socket.on(EVENTS['GO_LEFT'], () => {
 				const p = this.players.find(p => p.id === socket.id) 
-				p.board.movePieceLeft();
+				p.board.addInput(EVENTS['GO_LEFT']);
 			})
 
-			socket.on('rotate', () => {
+			socket.on(EVENTS['GO_DOWN'], () => {
 				const p = this.players.find(p => p.id === socket.id) 
-				p.board.rotatePiece();
+				p.board.addInput(EVENTS['GO_DOWN']);
 			})
 
-			socket.on('goDown', () => {
+			socket.on(EVENTS['ROTATE'], () => {
 				const p = this.players.find(p => p.id === socket.id) 
-				p.board.speedUpPiece();
+				p.board.addInput(EVENTS['ROTATE']);
 			})
 
 			socket.on('disconnect', (reason) => {
