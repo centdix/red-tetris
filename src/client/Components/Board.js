@@ -37,7 +37,8 @@ function Board(props) {
 		}
 		if (board.shadowPiece && props.player.login === props.user.login)
 			rows = renderPiece(rows, board.shadowPiece, "Cell Shadow");
-		rows = renderPiece(rows, board.fallingPiece, "Cell");
+		if (board.fallingPiece)
+			rows = renderPiece(rows, board.fallingPiece, "Cell");
 		let renderedBoard = rows.map((r, i) => {
 			return (
 				<div key={i} className="Row">
@@ -62,14 +63,17 @@ function Board(props) {
 		}
 	}
 
-	if (props.player && props.player.board.status !== 'empty')
+	if (props.player)
 	{
 		renderedBoard = renderBoard(props.player.board);
-		let tmp = {...props.player.board.nextPiece};
-		tmp.pos.x = 0;
-		tmp.pos.y = 0;
 		if (props.player.login === props.user.login) {
-			nextPiece = renderPiece(nextPieceRows, tmp, "CellNP").map((r, i) => {
+			if (props.player.board.nextPiece) {
+				let tmp = {...props.player.board.nextPiece};
+				tmp.pos.x = 0;
+				tmp.pos.y = 0;
+				nextPieceRows = renderPiece(nextPieceRows, tmp, "CellNP");
+			}
+			nextPiece = nextPieceRows.map((r, i) => {
 				return (
 					<div key={i} className="RowNP">
 						{r}

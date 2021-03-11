@@ -19,7 +19,7 @@ class Board {
 		this.w = width;
 		this.h = height;
 		this.fallingPiece = null;
-		this.shadowPiece = {};
+		this.shadowPiece = null;
 		this.nextPiece = null;
 		this.pieceIndex = 0;
 		this.filledLines = 0;
@@ -117,13 +117,15 @@ class Board {
 	}
 
 	stickPiece() {
-		Piece.getBlocksPos(this.fallingPiece).forEach((pos) => {
-			if (pos.y >= 0)
-				this.boardMap[pos.y][pos.x] = colors[this.fallingPiece.color];
+		let pieceBlocks = Piece.getBlocksPos(this.fallingPiece);
+		for (let i = 0; i < pieceBlocks.length; i++) {
+			if (pieceBlocks[i].y >= 0)
+				this.boardMap[pieceBlocks[i].y][pieceBlocks[i].x] = colors[this.fallingPiece.color];
 			else
 				this.status = 'filled';
-		}, this);
+		}
 		this.shadowPiece = null;
+		this.fallingPiece = null;
 		if (this.status !== 'filled') {
 			this.needPiece = true;
 			this.pieceIndex++;

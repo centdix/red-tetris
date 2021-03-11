@@ -28,7 +28,7 @@ class Piece {
 		shadowPiece.pos = {...piece.pos};
 		shadowPiece.blocks = [...piece.blocks];
 		shadowPiece.color = 'black';
-		while (this.shouldStick(shadowPiece, board === false))
+		while (this.shouldStick(shadowPiece, board) === false)
 			shadowPiece.pos.y += 1;
 		return shadowPiece;
 	}
@@ -120,7 +120,7 @@ class Piece {
 	}
 
 	static getBlocksPos(piece) {
-		let arr = [];
+		let arr = new Array();
 		let pos = {
 			x: 0,
 			y: 0
