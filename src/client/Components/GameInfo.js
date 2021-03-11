@@ -1,44 +1,48 @@
 import React from 'react';
+import EVENTS from '../../common/Events';
 import './GameInfo.css';
 
 function GameInfo(props) {
 
+	function start() {
+		if (props.gameData.status === 'standby' || props.gameData.status === 'finished')
+			props.user.socket.emit(EVENTS['START_GAME']);
+	}
+
 	let title = null;
 	let subtitle = null;
+	let winner = null;
 	let className = "hero is-warning Banner";
 	if (props.show === false)
 		className = "hero is-warning Banner Hidden";
 	if (props.gameData.status === 'standby') {
 		if (props.gameData.owner.login === props.user.login) {
 			title = "You are the host !"
-			subtitle = "Press ENTER when you want to start"
+			subtitle = <button className="button is-info" onClick={start}>START</button>
 		}
 		else {
 			title = "Welcome !"
-			subtitle = "Waiting for host to start the game..."
+			subtitle = <p className="subtitle">Waiting for host to start the game...</p>
 		}
 	}
 	else if (props.gameData.status === 'finished') {
 		title = "GAME OVER !"	
 		if (props.gameData.winner)
-			subtitle = "The winner is " + props.gameData.winner.login + " ! ";
-		else
-			subtitle = "";
+			winner = <p className="subtitle">The winner is {props.gameData.winner.login} !</p>
 		if (props.gameData.owner.login === props.user.login)
-			subtitle += "Press ENTER to start again"
+			subtitle = <button className="button is-info" onClick={start}>RESTART</button>
 		else
-			subtitle += "Waiting for host to start again..."
+			subtitle = <p className="subtitle">Waiting for host to start again...</p>
 	}
 
 	return (
 	    <div className={className}>
-		    <div class="hero-body">
-			    <p class="title">
+		    <div className="hero-body">
+			    <p className="title">
 			      {title}
 			    </p>
-			    <p class="subtitle">
-			      {subtitle}
-			    </p>
+			    {winner}
+			    {subtitle}
 			</div>
     	</div>
 	);

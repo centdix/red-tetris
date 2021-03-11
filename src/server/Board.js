@@ -49,26 +49,22 @@ class Board {
 	}
 
 	processInputs() {
-		let copy = null;
+		let copy = null;	
 		for (let i = 0; i < this.inputs.length; i++) {
+			copy = {...this.fallingPiece};
+			copy.pos = {...this.fallingPiece.pos};
 			switch(this.inputs[i]) {
 				case EVENTS['GO_RIGHT']:
-					copy = {...this.fallingPiece};
-					copy.pos = {...this.fallingPiece.pos};
 					copy.pos.x += 1;
  					if (Piece.collide(copy, this) === false)
  						this.fallingPiece.moveRight();
 					break;
 				case EVENTS['GO_LEFT']:
-					copy = {...this.fallingPiece};
-					copy.pos = {...this.fallingPiece.pos};
 					copy.pos.x -= 1;
  					if (Piece.collide(copy, this) === false)
  						this.fallingPiece.moveLeft();
 					break;
 				case EVENTS['GO_DOWN']:
-					copy = {...this.fallingPiece};
-					copy.pos = {...this.fallingPiece.pos};
 					copy.pos.y += 1;
 					if (Piece.shouldStick(copy, this)) {
 						this.inputs = [];
