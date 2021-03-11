@@ -24,6 +24,7 @@ class Board {
 		this.pieceIndex = 0;
 		this.filledLines = 0;
 		this.needPiece = false;
+		this.pending = false;
 		this.status = 'empty';
 		this.speed = 1;
 		this.tick = 0;
@@ -69,8 +70,9 @@ class Board {
 					copy = {...this.fallingPiece};
 					copy.pos = {...this.fallingPiece.pos};
 					copy.pos.y += 1;
-					if (Piece.collide(copy, this)) {
+					if (Piece.shouldStick(copy, this)) {
 						this.inputs = [];
+						this.pending = true;
 					}
 					this.fallingPiece.goDown();
 					break;
@@ -118,34 +120,44 @@ class Board {
 		this.filledLines = 0;
 	}
 
+	stickPiece() {
+		Piece.getBlocksPos(this.fallingPiece).forEach((pos) => {
+			if (pos.y >= 0)
+				this.boardMap[pos.y][pos.x] = colors[this.fallingPiece.color];
+			else
+				this.status = 'filled';
+		}, this);
+		this.shadowPiece = null;
+		if (this.status !== 'filled') {
+			this.needPiece = true;
+			this.pieceIndex++;
+			this.removeFilledLines();
+		}
+	}
+
 	update() {
-		this.processInputs();
 		this.tick += 1;
 		this.status = 'filling';
-		if (this.tick % Math.round(10 / this.speed) === 0) 
-			if (Piece.collide(this.fallingPiece, this) === false)
+		if (this.pending) {
+			this.pending = false;
+			this.inputs.splice(1);
+			if (this.inputs[0] !== EVENTS['GO_DOWN'])
+				this.processInputs();
+			if (Piece.shouldStick(this.fallingPiece, this)) {
+				this.stickPiece();
+				return ;
+			}
+		}
+		this.processInputs();
+		if (this.tick % Math.round(10 / this.speed) === 0) {
+			if (Piece.shouldStick(this.fallingPiece, this) === false)
 				this.fallingPiece.goDown();
+		}
 		if (this.tick % 100 === 0)
 			this.speed += this.speed / 20;
-		this.shadowPiece = new Piece();
-		this.shadowPiece.pos = {...this.fallingPiece.pos};
-		this.shadowPiece.blocks = [...this.fallingPiece.blocks];
-		this.shadowPiece.color = 'black';
-		while (Piece.collide(this.shadowPiece, this) === false)
-			this.shadowPiece.pos.y += 1;
-		if (Piece.collide(this.fallingPiece, this)) {
-			Piece.getBlocksPos(this.fallingPiece).forEach((pos) => {
-				if (pos.y >= 0)
-					this.boardMap[pos.y][pos.x] = colors[this.fallingPiece.color];
-				else
-					this.status = 'filled';
-			}, this);
-			this.shadowPiece = null;
-			if (this.status !== 'filled') {
-				this.needPiece = true;
-				this.pieceIndex++;
-				this.removeFilledLines();
-			}
+		this.shadowPiece = Piece.generateShadow(this.fallingPiece, this);
+		if (Piece.shouldStick(this.fallingPiece, this)) {
+			this.pending = true;
 		}
 	}
 

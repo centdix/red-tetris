@@ -23,7 +23,36 @@ class Piece {
 		}
 	}
 
+	static generateShadow(piece, board) {
+		let shadowPiece = new Piece();
+		shadowPiece.pos = {...piece.pos};
+		shadowPiece.blocks = [...piece.blocks];
+		shadowPiece.color = 'black';
+		while (this.shouldStick(shadowPiece, board === false))
+			shadowPiece.pos.y += 1;
+		return shadowPiece;
+	}
+
 	static collide(piece, board) {
+		if (this.getMaxY(piece) >= board.h - 1
+		|| this.getMaxX(piece) >= board.w || this.getMinX(piece) < 0) {
+			return true;
+		}
+		let blocksPos = this.getBlocksPos(piece);
+		for (let i = 0; i < blocksPos.length; i++) {
+			for (let y = 0; y < board.h; y++) {
+				for (let x = 0; x < board.w; x++) {
+					if (board.boardMap[y][x]) {
+						if (blocksPos[i].y === y && blocksPos[i].x === x)
+							return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	static shouldStick(piece, board) {
 		if (this.getMaxY(piece) >= board.h - 1
 		|| this.getMaxX(piece) >= board.w || this.getMinX(piece) < 0) {
 			return true;
