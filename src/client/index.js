@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,6 +21,28 @@ function App(props) {
 
   const [user, setUser] = useState(initUser);
   const [page, setPage] = useState('login');
+
+  useEffect(() => {
+    let regex = /#[A-Z]+\[[A-Z]+\]/gi;
+    let hash = window.location.hash;
+    let match = hash.match(regex);
+    if (match && match.length === 1) {
+      socket.emit(EVENTS['DIRECT_LINK'], hash, (response) => {
+        console.log(response);
+        if (response.status === 'error') {
+          showError(response.message);
+        }
+        else {
+          setUser({
+            login: response.login,
+            socket: props.socket,
+            room: response.room,
+          });
+          setPage('game');
+        }
+      });
+    }
+  }, []);
 
   function showError(error) {
     toast.error(error, {
@@ -88,6 +110,8 @@ function App(props) {
 
   let header = null;
   let main = <LoginPage onLogin={handleLogin}></LoginPage>;
+
+  console.log(user);
 
   if (user.login) {
     header = <Header goBack={handleGoBack} user={user}></Header>;

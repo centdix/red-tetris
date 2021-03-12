@@ -2,6 +2,7 @@
 
 const EVENTS = {
 	LOGIN: 'login',
+	DIRECT_LINK: 'directLink',
 	GET_ROOMS: 'getRooms',
 	CREATE_ROOM: 'createRoom',
 	JOIN_ROOM: 'joinRoom',

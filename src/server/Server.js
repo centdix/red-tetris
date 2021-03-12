@@ -55,6 +55,54 @@ class Server {
 				});
 			})
 
+			socket.on(EVENTS['DIRECT_LINK'], (hash, callback) => {
+				let room = hash.slice(1, hash.indexOf('['));
+				let login = hash.slice(hash.indexOf('[') + 1, hash.indexOf(']'));
+				const usernameTaken = this.players.find(p => p.login === login && p.id !== socket.id);
+				if (typeof(usernameTaken) !== 'undefined') {
+					callback({
+						status: 'error',
+						message: 'Username is already taken'
+					});
+					return ;
+				}
+				const game = this.games.find(g => g.room === room);
+				if (typeof(game) === 'undefined') {
+					callback({
+						status: 'error',
+						message: 'Room doesn\'t exist'
+					});
+					return ;
+				}
+				if (game.mode === 'Private' && p.id !== game.owner.id) {
+					callback({
+						status: 'error',
+						message: 'This room is private'
+					})
+					return ;
+				}
+				if (game.status === 'running') {
+					callback({
+						status: 'error',
+						message: 'This game has already started'
+					})
+					return ;
+				}
+				const p = new Player(socket.id, login);
+				this.players.push(p);
+				if (game.players.indexOf(p) === -1) {
+					socket.join(room);
+					p.setRoom(room);
+					game.addPlayer(p);
+				}
+				this.io.to(room).emit('gameState', game.getInfo());
+				callback({
+					status: 'ok',
+					login: login,
+					room: room
+				});
+			})
+
 			socket.on(EVENTS['GET_ROOMS'], (data) => {
 				socket.emit('games', this.games.map(g => g.getInfo()));
 			})

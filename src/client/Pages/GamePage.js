@@ -37,8 +37,6 @@ function GamePage(props) {
 	let info = null;
 	let boards = null;
 	let showInfo = true;
-	let hash = window.location.hash;
-	let roomName = hash.slice(0, hash.indexOf('['));
 	if (gameData) {
 		if (gameData.status === 'running')
 			showInfo = false;

@@ -93,7 +93,7 @@ class Board {
 			{
 				filledLines++;
 				for (let i = x; i >= 1; i--) {
-					this.boardMap[i] = this.boardMap[i - 1];
+					this.boardMap[i] = [...this.boardMap[i - 1]];
 				}
 			}
 		}
