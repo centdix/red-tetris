@@ -34,7 +34,7 @@ class Piece {
 	}
 
 	static collide(piece, board) {
-		if (this.getMaxY(piece) >= board.h - 1
+		if (this.getMaxY(piece) > board.h - 1
 		|| this.getMaxX(piece) >= board.w || this.getMinX(piece) < 0) {
 			return true;
 		}
@@ -53,10 +53,8 @@ class Piece {
 	}
 
 	static shouldStick(piece, board) {
-		if (this.getMaxY(piece) >= board.h - 1
-		|| this.getMaxX(piece) >= board.w || this.getMinX(piece) < 0) {
+		if (this.getMaxY(piece) >= board.h - 1)
 			return true;
-		}
 		let blocksPos = this.getBlocksPos(piece);
 		for (let i = 0; i < blocksPos.length; i++) {
 			for (let y = 0; y < board.h; y++) {

@@ -24,10 +24,7 @@ class Board {
 		this.pieceIndex = 0;
 		this.filledLines = 0;
 		this.needPiece = false;
-		this.pending = false;
-		this.status = 'empty';
-		this.speed = 1;
-		this.tick = 0;
+		this.status = 'filling';
 		this.inputs = [];
 		this.boardMap = [];
 		for (let i = 0; i < this.h; i++) {
@@ -42,6 +39,7 @@ class Board {
 		this.fallingPiece = Piece.generate(fallingType);
 		this.nextPiece = Piece.generate(nextType);
 		this.needPiece = false;
+		this.pieceIndex++;
 	}
 
 	addInput(input) {
@@ -65,12 +63,12 @@ class Board {
  						this.fallingPiece.moveLeft();
 					break;
 				case EVENTS['GO_DOWN']:
-					copy.pos.y += 1;
-					if (Piece.shouldStick(copy, this)) {
+					if (Piece.shouldStick(this.fallingPiece, this)) {
 						this.inputs = [];
-						this.pending = true;
+						this.stickPiece();
 					}
-					this.fallingPiece.goDown();
+					else
+						this.fallingPiece.goDown();
 					break;
 				case EVENTS['ROTATE']:
 					copy = this.fallingPiece.rotateCopy();
@@ -80,6 +78,7 @@ class Board {
 				default:
 			}
 		}
+		this.shadowPiece = Piece.generateShadow(this.fallingPiece, this);
 		this.inputs = [];
 	}
 
@@ -125,38 +124,17 @@ class Board {
 				this.status = 'filled';
 		}
 		this.shadowPiece = null;
-		this.fallingPiece = null;
 		if (this.status !== 'filled') {
 			this.needPiece = true;
-			this.pieceIndex++;
 			this.removeFilledLines();
 		}
 	}
 
 	update() {
-		this.tick += 1;
-		this.status = 'filling';
-		if (this.pending) {
-			this.pending = false;
-			this.inputs.splice(1);
-			if (this.inputs[0] !== EVENTS['GO_DOWN'])
-				this.processInputs();
-			if (Piece.shouldStick(this.fallingPiece, this)) {
-				this.stickPiece();
-				return ;
-			}
-		}
-		this.processInputs();
-		if (this.tick % Math.round(10 / this.speed) === 0) {
-			if (Piece.shouldStick(this.fallingPiece, this) === false)
-				this.fallingPiece.goDown();
-		}
-		if (this.tick % 100 === 0)
-			this.speed += this.speed / 20;
-		this.shadowPiece = Piece.generateShadow(this.fallingPiece, this);
-		if (Piece.shouldStick(this.fallingPiece, this)) {
-			this.pending = true;
-		}
+		if (Piece.shouldStick(this.fallingPiece, this) === false)
+			this.fallingPiece.goDown();
+		else
+			this.stickPiece();
 	}
 
 }

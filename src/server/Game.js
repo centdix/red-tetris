@@ -35,6 +35,8 @@ class Game {
 		this.typesInQueue = [];
 		this.status = 'standby';
 		this.winner = null;
+		this.tick = 0;
+		this.speed = 1;
 	}
 
 	addPlayer(player) {
@@ -80,6 +82,8 @@ class Game {
 	}
 
 	start() {
+		this.tick = 0;
+		this.speed = 1;
 		this.status = 'running';
 		this.setPiecesInQueue(0);
 		this.players.forEach((p) => {
@@ -90,6 +94,10 @@ class Game {
 	}
 
 	updateState() {
+		this.tick += 1;
+		if (this.tick % 1000 === 0)
+			this.speed += this.speed / 20;
+
 		let alive = this.players.length;
 		this.players.forEach((p) => {
 			if (p.board.status === 'filled')
@@ -99,7 +107,10 @@ class Game {
 					this.sendExtraLines(p, p.board.filledLines - 1);
 					p.board.clearFilledLines();
 				}
-				p.board.update();
+				p.board.processInputs();
+				if (this.tick % Math.round(10 / this.speed) === 0) {
+					p.board.update();
+				}
 				if (p.board.needPiece) {
 					let index = p.board.pieceIndex;
 					if (this.typesInQueue[index + 1] === null) {
@@ -109,6 +120,7 @@ class Game {
 				}
 			}
 		});
+		
 		if (this.players.length === 1 && this.players[0].board.status === 'filled') {
 			this.stop();
 		}

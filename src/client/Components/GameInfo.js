@@ -11,7 +11,6 @@ function GameInfo(props) {
 
 	let title = null;
 	let subtitle = null;
-	let winner = null;
 	let className = "hero is-warning Banner";
 	if (props.show === false)
 		className = "hero is-warning Banner Hidden";
@@ -26,9 +25,10 @@ function GameInfo(props) {
 		}
 	}
 	else if (props.gameData.status === 'finished') {
-		title = "GAME OVER !"	
 		if (props.gameData.winner)
-			winner = <p className="subtitle">The winner is {props.gameData.winner.login} !</p>
+			title = "The winner is " + props.gameData.winner.login + " !";
+		else
+			title = "GAME OVER !";		
 		if (props.gameData.owner.login === props.user.login)
 			subtitle = <button className="button is-info" onClick={start}>RESTART</button>
 		else
@@ -41,7 +41,6 @@ function GameInfo(props) {
 			    <p className="title">
 			      {title}
 			    </p>
-			    {winner}
 			    {subtitle}
 			</div>
     	</div>
