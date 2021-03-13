@@ -16,3 +16,9 @@
 	display: grid !important;
 	grid-template-columns: 1fr 1fr 1fr 1fr;
 }
+
+.Message {
+	flex-grow: 1;
+	text-align: center;
+	font-size: x-large;
+}

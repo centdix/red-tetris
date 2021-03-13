@@ -16,6 +16,7 @@ function RoomsPage(props) {
 	}, [props.user.socket]);
 
 	let list = null;
+	let noRoomsMessage = null;
 	if (rooms.length) {
 		list = rooms.map((r) => {
 			let className = "panel-block RoomBlock fade-in";
@@ -33,6 +34,9 @@ function RoomsPage(props) {
 			);
 		});
 	}
+	else {
+		noRoomsMessage = <p>No rooms yet. Create one !</p>
+	}
 
 	return (
 	    <div className="RoomsPage">
@@ -42,7 +46,7 @@ function RoomsPage(props) {
 			    		{list}
 			    	</div>
 		    </div>
-		    <div style={{flexGrow: 1}}></div>
+		    <div className="Message">{noRoomsMessage}</div>
 	    	<RoomForm onCreateRoom={props.onCreateRoom}></RoomForm>
 	    </div>
 	);
