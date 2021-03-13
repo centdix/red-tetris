@@ -1,6 +1,5 @@
 const Game = require('../src/server/Game');
 const Player = require('../src/server/Player');
-const io = require('socket.io');
 const should = require('chai').should();
 const expect = require('chai').expect;
 
@@ -8,15 +7,9 @@ describe('Game', () => {
 
 	let game;
 	let owner;
-	let listener;
 	beforeEach(function() {
-		listener = io().listen(8080);
 		owner = new Player(3, 'bob');
-		game = new Game(listener, owner, 'test', 'Public');
-	})
-
-	afterEach(function() {
-		listener.close();
+		game = new Game(owner, 'test', 'Public');
 	})
 
 	describe('adding player', () => {
@@ -38,10 +31,10 @@ describe('Game', () => {
 			var p = new Player();
 			expect(() => game.removePlayer(p)).to.throw();
 		});
-		it('change game owner to undefined if player is owner and no other player', () => {
+		it('change game owner to null if player is owner and no other player', () => {
 			var player = new Player(5, 'jean');
 			game.removePlayer(owner);
-			expect(game.owner).to.be.undefined;
+			expect(game.owner).to.be.null;
 		});
 		it('change game owner to next player if player is owner', () => {
 			var player = new Player(5, 'jean');
@@ -82,9 +75,6 @@ describe('Game', () => {
 
 		it('sets status to finished', () => {
 			game.status.should.equal('finished');
-		});
-		it('sets interval to null', () => {
-			expect(game.interval).to.be.null;
 		});
 	})
 

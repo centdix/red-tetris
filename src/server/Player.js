@@ -16,6 +16,11 @@ class Player {
 		this.room = room;
 	}
 
+	leaveRoom() {
+		this.room = null;
+		this.board = new Board(10, 20);
+	}
+
 }
 
 module.exports = Player;

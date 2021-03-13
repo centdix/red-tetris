@@ -28,7 +28,6 @@ function App(props) {
     let match = hash.match(regex);
     if (match && match.length === 1) {
       socket.emit(EVENTS['DIRECT_LINK'], hash, (response) => {
-        console.log(response);
         if (response.status === 'error') {
           showError(response.message);
         }
@@ -59,8 +58,15 @@ function App(props) {
         setPage('login');
         break ;
       case 'game':
-        user.socket.emit(EVENTS['LEAVE_ROOM']);
-        setPage('rooms');
+        user.socket.emit(EVENTS['LEAVE_ROOM'], (response) => {
+          if (response.status === 'error') {
+            showError(response.message);
+          }
+          else {
+            window.location.hash = "";
+            setPage('rooms');
+          }
+        });
         break ;
       default:
     }
@@ -110,8 +116,6 @@ function App(props) {
 
   let header = null;
   let main = <LoginPage onLogin={handleLogin}></LoginPage>;
-
-  console.log(user);
 
   if (user.login) {
     header = <Header goBack={handleGoBack} user={user}></Header>;

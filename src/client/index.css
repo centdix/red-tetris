@@ -5,8 +5,6 @@
     "main";
   grid-template-rows: 10% 90%;
   height: 100vh;
-  background-color: white;
-  filter: invert(1) hue-rotate(180deg);
 }
 
 .fade-in {

@@ -79,37 +79,6 @@ describe('Server socket', function() {
 		})
 	});
 
-	describe('on chat message', function() {
-		it('should send error on not logged user', function(done) {
-			client.on('connect', () => {
-				client.emit('clientMsg', 'fwefe', (response) => {
-					response.status.should.equal('error');
-					done();		
-				});
-			})
-		})
-		it('should send error on empty message', function(done) {
-			client.on('connect', () => {
-				client.emit('login', 'test', (response) => {
-					client.emit('clientMsg', '', (response) => {
-						response.status.should.equal('error');
-						done();		
-					});
-				});
-			})
-		})
-		it('should send error on invalid data type', function(done) {
-			client.on('connect', () => {
-				client.emit('login', 'test', (response) => {
-					client.emit('clientMsg', 314, (response) => {
-						response.status.should.equal('error');
-						done();		
-					});
-				});
-			})
-		})
-	})
-
 	describe('on create room', function() {
 		it('should send error on not logged user', function(done) {
 			client.on('connect', () => {
@@ -255,6 +224,60 @@ describe('Server socket', function() {
 
 	describe('on leave room', function() {
 
+		describe('when only one player', function() {
+			beforeEach(function(done) {
+				client.on('connect', () => {
+					client.emit('login', 'test', (response) => {
+						client.emit('createRoom', 'test', 'Public', (response) => {
+							done();
+						})
+					})
+				})
+			})
+
+			it('should send error on not logged user', function(done) {
+				otherClients[0] = ioClient(url, options);
+				otherClients[0].on('connect', () => {
+					otherClients[0].emit('leaveRoom', (response) => {
+						response.status.should.equal('error');
+						done();		
+					});
+				})
+			})
+			it('should send error if room doesn\'t exist', function(done) {
+				otherClients[0] = ioClient(url, options);
+				otherClients[0].on('connect', () => {
+					otherClients[0].emit('login', 'bob', (response) => {
+						otherClients[0].emit('leaveRoom', (response) => {
+							response.status.should.equal('error');
+							done();		
+						});
+					})
+				})
+			})
+			it('should delete game', function(done) {
+				client.emit('leaveRoom', (response) => {
+					response.status.should.equal('ok');
+					server.games.should.have.lengthOf(0);
+					done();
+				})
+			})
+			it('should delete interval', function(done) {
+				client.emit('leaveRoom', (response) => {
+					response.status.should.equal('ok');
+					Object.keys(server.intervals).should.have.lengthOf(0);
+					done();
+				})
+			})
+			it('should set player room to null', function(done) {
+				client.emit('leaveRoom', (response) => {
+					response.status.should.equal('ok');
+					expect(server.players[0].room).to.be.null;
+					done();
+				})
+			})
+		})
+		
 	})
 
 	describe('on start game', function() {

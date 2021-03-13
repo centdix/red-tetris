@@ -37,7 +37,7 @@ function GamePage(props) {
 	let info = null;
 	let boards = null;
 	let showInfo = true;
-	if (gameData) {
+	if (gameData && gameData.owner) {
 		if (gameData.status === 'running')
 			showInfo = false;
 		else

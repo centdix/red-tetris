@@ -54,7 +54,10 @@ class Game {
 			throw Error('player not found');
 		this.players.splice(index, 1);
 		if (player.id === this.owner.id) {
-			this.owner = this.players[0];
+			if (this.players.length > 0)
+				this.owner = this.players[0];
+			else
+				this.owner = null;
 		}
 	}
 

@@ -5,8 +5,7 @@ const expect = require('chai').expect;
 
 describe('Piece', () => {
 	var piece = Piece.generate('T');
-	var board = new Board();
-	board.init(10, 20);
+	var board = new Board(10, 20);
 
 	describe('generate', () => {
 		it('throws error if arg is not capital letter', () => {

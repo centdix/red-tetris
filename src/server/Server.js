@@ -16,15 +16,19 @@ class Server {
 	removePlayerFromGame(game, player) {
 		game.removePlayer(player);
 		if (game.players.length === 0) {
+			if (this.intervals.hasOwnProperty(game.room)) {
+				clearInterval(this.intervals[game.room]);
+				delete this.intervals[game.room];
+			}
 			const index = this.games.indexOf(game);
 			this.games.splice(index, 1);
+			this.io.emit('games', this.games.map(g => g.getInfo()));
 		}
 	}
 
 	connect() {
 
 		this.io.on('connection', (socket) => {
-			// console.log('user connection');
 			socket.on(EVENTS['LOGIN'], (login, callback) => {
 				if (typeof(login) !== 'string') {
 					callback({
@@ -205,23 +209,36 @@ class Server {
 			})
 
 			socket.on('getGameData', () => {
-				const p = this.players.find(p => p.id === socket.id) 
+				const p = this.players.find(p => p.id === socket.id);
 				const game = this.games.find(g => g.room === p.room);
 				socket.emit('gameState', game.getInfo());
 			})
 
-			socket.on('leaveRoom', () => {
-				const p = this.players.find(p => p.id === socket.id) 
+			socket.on('leaveRoom', (callback) => {
+				const p = this.players.find(p => p.id === socket.id);
+				if (typeof(p) === 'undefined') {
+					callback({
+						status: 'error',
+						message: 'User is not logged in'
+					});
+					return ;
+				} 
 				const game = this.games.find(g => g.room === p.room);
-				const prevLength = this.games.length;
-				if (game) {
-					this.removePlayerFromGame(game, p);
-					if (this.games.length < prevLength)
-						this.io.emit('games', this.games.map(g => g.getInfo()));
+				if (typeof(game) === 'undefined') {
+					callback({
+						status: 'error',
+						message: 'Room doesn\'t exist'
+					});
+					return ;
 				}
+				this.removePlayerFromGame(game, p);
 				this.io.to(p.room).emit('gameState', game.getInfo());
 				socket.leave(p.room);
-				p.setRoom(null);
+				p.leaveRoom();
+				callback({
+					status: 'ok'
+				})
+
 			})
 
 			socket.on('startGame', () => {
@@ -236,6 +253,7 @@ class Server {
 						this.io.to(game.room).emit('gameState', game.getInfo());
 						if (game.status === 'finished') {
 							clearInterval(this.intervals[game.room]);
+							delete this.intervals[game.room];
 							this.io.emit('games', this.games.map(g => g.getInfo()));
 						}
 					}, 60);
@@ -268,7 +286,6 @@ class Server {
 					const game = this.games.find(g => g.room === p.room);
 					if (typeof(game) !== 'undefined') {
 						this.removePlayerFromGame(game, p);
-						this.io.emit('games', this.games.map(g => g.getInfo()));
 					}
 					const index = this.players.indexOf(p);
 					this.players.splice(index, 1);

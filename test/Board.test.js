@@ -7,38 +7,7 @@ describe('Board', () => {
 
 	let board;
 	beforeEach(function() {
-		board = new Board();
-		board.init(10, 20);
-	})
-
-	describe('init', () => {
-		it('sets width', () => {
-			board.w.should.equal(10);
-		});
-		it('sets height', () => {
-			board.h.should.equal(20);
-		});
-		it('sets fallingPiece to null', () => {
-			expect(board.fallingPiece).to.be.null;
-		});
-		it('sets nextPiece to null', () => {
-			expect(board.nextPiece).to.be.null;
-		});
-		it('sets pieceIndex to 0', () => {
-			board.pieceIndex.should.equal(0);
-		});
-		it('sets needPiece to false', () => {
-			expect(board.needPiece).to.be.false;
-		});
-		it('sets status to empty', () => {
-			board.status.should.equal('empty');
-		});
-		it('sets boardmap to width x height', () => {
-			board.boardMap.should.have.lengthOf(board.h);
-			for (let i = 0; i < board.h; i++) {
-				board.boardMap[i].should.have.lengthOf(board.w);
-			}
-		});
+		board = new Board(10, 20);
 	})
 
 	describe('setPieces', () => {
