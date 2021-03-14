@@ -98,7 +98,7 @@ class Game {
 
 	updateState() {
 		this.tick += 1;
-		if (this.tick % 1000 === 0)
+		if (this.tick % 200 === 0)
 			this.speed += this.speed / 20;
 
 		let alive = this.players.length;

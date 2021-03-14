@@ -59,6 +59,22 @@ class Server {
 				});
 			})
 
+			socket.on(EVENTS['LOGOUT'], (callback) => {
+				const p = this.players.find(p => p.id === socket.id);
+				if (typeof(p) === 'undefined') {
+					callback({
+						status: 'error',
+						message: 'User doesn\'t exist'
+					});
+					return ;
+				}
+				const index = this.players.indexOf(p);
+				this.players.splice(index, 1);
+				callback({
+					status: 'ok'
+				})
+			})
+
 			socket.on(EVENTS['DIRECT_LINK'], (hash, callback) => {
 				let room = hash.slice(1, hash.indexOf('['));
 				let login = hash.slice(hash.indexOf('[') + 1, hash.indexOf(']'));

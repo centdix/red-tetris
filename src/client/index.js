@@ -8,7 +8,8 @@ import Main from './Components/Main';
 import LoginPage from './Pages/LoginPage';
 import EVENTS from '../common/Events.js';
 
-import './bulma.css';
+import '../../node_modules/bulma/css/bulma.css';
+import '../../node_modules/bulma-switch/dist/css/bulma-switch.min.css';
 import './index.css';
 
 function App(props) {
@@ -21,6 +22,7 @@ function App(props) {
 
   const [user, setUser] = useState(initUser);
   const [page, setPage] = useState('login');
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     let regex = /#[A-Z]+\[[A-Z]+\]/gi;
@@ -53,9 +55,16 @@ function App(props) {
 
   function handleGoBack() {
     switch (page) {
-      case 'rooms':
-        setUser(initUser);
-        setPage('login');
+      case 'rooms':        
+        user.socket.emit(EVENTS['LOGOUT'], (response) => {
+          if (response.status === 'error') {
+            showError(response.message);
+          }
+          else {
+            setUser(initUser);
+            setPage('login');
+          }
+        });
         break ;
       case 'game':
         user.socket.emit(EVENTS['LEAVE_ROOM'], (response) => {
@@ -114,8 +123,12 @@ function App(props) {
     });
   }
 
+  function handleDarkModeSwitch() {
+    setDarkMode(!darkMode);
+  }
+
   let header = null;
-  let main = <LoginPage onLogin={handleLogin}></LoginPage>;
+  let main = <LoginPage onLogin={handleLogin} onSwitch={handleDarkModeSwitch} switchValue={darkMode}></LoginPage>;
 
   if (user.login) {
     header = <Header goBack={handleGoBack} user={user}></Header>;
@@ -127,8 +140,10 @@ function App(props) {
       ></Main>;
   }
 
+  let appClass = darkMode ? "App Dark" : "App"
+
   return (
-    <div className="App">
+    <div className={appClass}>
       {header}
       {main}
       <ToastContainer />

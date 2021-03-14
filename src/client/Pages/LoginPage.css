@@ -8,3 +8,9 @@
 	justify-content: center;
 	align-items: center;
 }
+
+.Switch {
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+}

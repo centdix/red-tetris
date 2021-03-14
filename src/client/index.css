@@ -5,6 +5,13 @@
     "main";
   grid-template-rows: 10% 90%;
   height: 100vh;
+  background-color: white;
+  transition: all 0.5s;
+}
+
+.Dark {
+  filter: invert(100%);
+  transition: all 0.5s;
 }
 
 .fade-in {
