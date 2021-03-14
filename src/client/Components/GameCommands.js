@@ -24,19 +24,19 @@ function GameCommands(props) {
 	return (
 	    <div className="GameCommands">
 	    	<div className="command" onClick={goLeft}>
-	    		<span>GO LEFT</span>
+	    		<span className="noselect">GO LEFT</span>
 	    		<img src={arrow} className="commandImage"/>
 	    	</div>
 	    	<div className="command" onClick={goRight}>
-	    		<span>GO RIGHT</span>
+	    		<span className="noselect">GO RIGHT</span>
 	    		<img src={arrow} className="commandImage right"/>
 	    	</div>
 	    	<div className="command" onClick={goDown}>
-	    		<span>GO DOWN</span>	    		
+	    		<span className="noselect">GO DOWN</span>	    		
 	    		<img src={arrow} className="commandImage down"/>
 	    	</div>
 	    	<div className="command" onClick={rotate}>
-	    		<span>ROTATE</span>	    		
+	    		<span className="noselect">ROTATE</span>	    		
 	    		<img src={arrow} className="commandImage up"/>
 	    	</div>
     	</div>
