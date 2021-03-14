@@ -9,13 +9,12 @@
 .GameMain {
 	display: flex;
 	flex-grow: 1;
-	justify-content: center;
 	align-items: center;
 	overflow-x: scroll;
 }
 
 .BoardContainer {
-	margin: 10px;
+	margin: auto;
 }
 
 .Login {

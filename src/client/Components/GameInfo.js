@@ -11,9 +11,9 @@ function GameInfo(props) {
 
 	let title = null;
 	let subtitle = null;
-	let className = "hero is-warning Banner";
+	let className = "hero is-warning Banner centered";
 	if (props.show === false)
-		className = "hero is-warning Banner Hidden";
+		className += " Hidden";
 	if (props.gameData.status === 'standby') {
 		if (props.gameData.owner.login === props.user.login) {
 			title = "You are the host !"

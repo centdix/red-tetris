@@ -18,7 +18,6 @@
 }
 
 .Message {
-	flex-grow: 1;
 	text-align: center;
 	font-size: x-large;
 }

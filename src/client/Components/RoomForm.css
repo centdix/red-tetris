@@ -1,7 +1,6 @@
 .RoomForm {
-	max-height: 35%;
-	width: 50%;
 	align-self: center;
+	margin: auto;
 }
 
 .TitleCreate {
@@ -12,7 +11,7 @@
 }
 
 .CreateButton {
-	width: 20%;
+	margin-left: 10px;
 }
 
 .button {
