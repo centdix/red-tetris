@@ -8,6 +8,7 @@ class Player {
 		this.login = login;
 		this.room = null;
 		this.board = new Board(10, 20);
+		this.score = 0;
 	}
 
 	setRoom(room) {
@@ -19,6 +20,11 @@ class Player {
 	leaveRoom() {
 		this.room = null;
 		this.board = new Board(10, 20);
+		this.score = 0;
+	}
+
+	addPoints(points) {
+		this.score += points;
 	}
 
 }

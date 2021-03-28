@@ -3,6 +3,7 @@
 }
 
 .UserBoard {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1);
@@ -11,6 +12,7 @@
 }
 
 .Board {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1);
@@ -25,6 +27,13 @@
 	height: 10vh;
 	margin: 5px;
 	box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.1);	
+}
+
+.Score {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	text-align: right;
 }
 
 .Row {

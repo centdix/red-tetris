@@ -72,8 +72,25 @@ class Board {
 					break;
 				case EVENTS['ROTATE']:
 					copy = this.fallingPiece.rotateCopy();
- 					if (Piece.collide(copy, this) === false)
+ 					if (Piece.collide(copy, this) === false) {
  						this.fallingPiece.rotate();
+ 					}
+ 					else {
+ 						if (Piece.getMaxX(copy) >= this.w) {
+	 						while (Piece.getMaxX(copy) >= this.w) {
+	 							this.fallingPiece.moveLeft();
+	 							copy = {...this.fallingPiece};
+	 						}
+							this.fallingPiece.rotate();
+	 					}
+	 					else if (Piece.getMinX(copy) <= 0) {
+	 						while (Piece.getMinX(copy) <= 0) {
+	 							this.fallingPiece.moveRight();
+	 							copy = {...this.fallingPiece};
+	 						}
+							this.fallingPiece.rotate();
+						}
+ 					}
 					break;
 				default:
 			}

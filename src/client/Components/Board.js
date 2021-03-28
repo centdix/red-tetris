@@ -84,10 +84,13 @@ function Board(props) {
 		}
 	}
 
+	console.log(props.player);
+
 	return (
 		<div className="BoardBox">
 		    <div className={boardClass}>
 		    	{renderedBoard}
+		    	<span className="Score">{props.player.score}</span>
 		    </div>
 	    	{nextPiece}
 	    </div>

@@ -91,6 +91,7 @@ class Game {
 		this.setPiecesInQueue(0);
 		this.players.forEach((p) => {
 			p.board = new Board(10, 20);
+			p.score = 0;
 			let index = p.board.pieceIndex;
 			p.board.setPieces(this.typesInQueue[index], this.typesInQueue[index + 1]);
 		});
@@ -106,10 +107,11 @@ class Game {
 			if (p.board.status === 'filled')
 				alive--;
 			else {
+				p.addPoints(p.board.filledLines * 10);
 				if (p.board.filledLines > 1){
 					this.sendExtraLines(p, p.board.filledLines - 1);
-					p.board.clearFilledLines();
 				}
+				p.board.clearFilledLines();
 				p.board.processInputs();
 				if (this.tick % Math.round(10 / this.speed) === 0) {
 					p.board.update();

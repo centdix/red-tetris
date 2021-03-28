@@ -289,10 +289,11 @@ class Server {
 			socket.on(EVENTS['GO_DOWN'], () => {
 				const p = this.players.find(p => p.id === socket.id) 
 				p.board.addInput(EVENTS['GO_DOWN']);
+				p.addPoints(1);
 			})
 
 			socket.on(EVENTS['ROTATE'], () => {
-				const p = this.players.find(p => p.id === socket.id) 
+				const p = this.players.find(p => p.id === socket.id)
 				p.board.addInput(EVENTS['ROTATE']);
 			})
 
