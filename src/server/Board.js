@@ -79,14 +79,14 @@ class Board {
  						if (Piece.getMaxX(copy) >= this.w) {
 	 						while (Piece.getMaxX(copy) >= this.w) {
 	 							this.fallingPiece.moveLeft();
-	 							copy = {...this.fallingPiece};
+	 							copy.pos = {...this.fallingPiece.pos};
 	 						}
 							this.fallingPiece.rotate();
 	 					}
 	 					else if (Piece.getMinX(copy) <= 0) {
 	 						while (Piece.getMinX(copy) <= 0) {
 	 							this.fallingPiece.moveRight();
-	 							copy = {...this.fallingPiece};
+	 							copy.pos = {...this.fallingPiece.pos};
 	 						}
 							this.fallingPiece.rotate();
 						}
