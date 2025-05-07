@@ -102,7 +102,7 @@ jobs:
       )
     outputs:
       response_body_b64: ${{ steps.read_response.outputs.response_body_b64 }}
-      issue_number: ${{ steps.set_context_ids.outputs.issue_number }}
+      issue_number: ${{ steps.set_issue_number_output.outputs.issue_number }}
       probe_succeeded: ${{ steps.probe.outcome == 'success' }}
       context_type: ${{ steps.format.outputs.context_type }}
 
@@ -393,6 +393,15 @@ jobs:
           echo "issue_number_for_job_output=$ISSUE_OR_PR_NUMBER" >> $GITHUB_OUTPUT # for job output 'issue_number'
           echo "context_type_for_job_output=$CONTEXT_TYPE" >> $GITHUB_OUTPUT # for job output 'context_type'
           echo "::endgroup::"
+
+      # Add a dedicated step to set the issue_number output for the job
+      - name: Set Issue Number for Job Output
+        id: set_issue_number_output
+        env:
+          ISSUE_OR_PR_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }}
+        run: |
+          echo "Setting job output issue_number to: $ISSUE_OR_PR_NUMBER"
+          echo "issue_number=$ISSUE_OR_PR_NUMBER" >> $GITHUB_OUTPUT
 
       - name: Format - Fetch Standard Comments
         id: format_fetch_comments
@@ -760,6 +769,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [process_event] # Depends on the renamed job
     steps:
+      - name: Debug - Print Issue Number
+        run: |
+          echo "Received issue_number from process_event job: '${{ needs.process_event.outputs.issue_number }}'"
+          echo "Process event job result: ${{ needs.process_event.result }}"
+
       - name: Check for App Credentials Post
         id: check_app_secrets_post
         run: |
