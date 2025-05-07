@@ -44,13 +44,13 @@ jobs:
           ISSUE_BODY_CONTENT="${{ github.event.issue.body }}"
 
           echo "Issue Title: $ISSUE_TITLE"
-          echo "Sending issue body to API: $EXTERNAL_ANALYSIS_API_ENDPOINT"
+          echo "Sending issue body to API"
 
           # Safely create JSON payload using jq
           JSON_PAYLOAD=$(jq -n \
             --arg title "$ISSUE_TITLE" \
             --arg body "$ISSUE_BODY_CONTENT" \
-            '{ body: { issue_title: $title, issue_body: $body } }') # Adjust payload to what your API expects
+            '{ body: { issue_title: $title, issue_body: $body } }')
 
           echo "::debug::Sending payload: $JSON_PAYLOAD"
 
