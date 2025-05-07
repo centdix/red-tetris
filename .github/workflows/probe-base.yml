@@ -93,7 +93,7 @@ jobs:
       (
         github.event_name == 'issue_comment' &&
         !contains(github.event.comment.user.login, '[bot]') &&
-        inputs.command_prefix != '' && # Ensure command_prefix is set if it's a comment
+        inputs.command_prefix != '' &&
         contains(github.event.comment.body, inputs.command_prefix)
       ) || (
         inputs.direct_user_request != '' && inputs.direct_user_request != null
@@ -394,20 +394,12 @@ jobs:
           echo "context_type_for_job_output=$CONTEXT_TYPE" >> $GITHUB_OUTPUT # for job output 'context_type'
           echo "::endgroup::"
 
-      # THIS STEP IS NOW REDUNDANT AS format_init SETS THE JOB OUTPUTS
-      # - name: Set Job Outputs from Format Init
-      #   id: set_final_job_outputs
-      #   run: |
-      #     echo "issue_number=${{ steps.format_init.outputs.issue_number_for_job_output }}" >> $GITHUB_OUTPUT
-      #     echo "context_type=${{ steps.format_init.outputs.context_type_for_job_output }}" >> $GITHUB_OUTPUT
-
       - name: Format - Fetch Standard Comments
         id: format_fetch_comments
         env:
           GH_TOKEN: ${{ env.WORKFLOW_TOKEN }}
           REPO: ${{ github.repository }}
           ISSUE_OR_PR_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }} # Use from GITHUB_ENV
-        # ... (rest of step is unchanged)
         run: |
           echo "::group::Fetch Standard Comments"
           set -e
@@ -445,7 +437,6 @@ jobs:
           GH_TOKEN: ${{ env.WORKFLOW_TOKEN }}
           REPO: ${{ github.repository }}
           ISSUE_OR_PR_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }}
-        # ... (rest of step is largely unchanged, ensures HEAD_REF_NAME is set to GITHUB_ENV)
         run: |
           echo "::group::Fetch PR Details (Title, Body, SHAs, RefName)"
           set -e
@@ -474,7 +465,6 @@ jobs:
         env:
           BASE_SHA: ${{ env.BASE_SHA }}
           HEAD_SHA: ${{ env.HEAD_SHA }}
-        # ... (rest of step is unchanged)
         run: |
           echo "::group::Fetch & Filter PR Diff"; set -e; FILTERED_PR_DIFF="<!-- Diff generation skipped or failed -->"; RAW_DIFF_CONTENT=""
           if [[ -z "$BASE_SHA" || -z "$HEAD_SHA" ]]; then echo "::error::Cannot run git diff without valid base/head SHAs."; RAW_DIFF_CONTENT="FETCH_FAILED"; else
@@ -500,7 +490,6 @@ jobs:
           REPO: ${{ github.repository }}
           ISSUE_OR_PR_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }}
           COMMENTS_XML: ${{ env.COMMENTS_XML }}
-        # ... (rest of step is unchanged)
         run: |
           echo "::group::Fetch PR Review Comments & Bodies"; set -e; CURRENT_COMMENTS_XML="$COMMENTS_XML"
           REVIEW_COMMENTS_JSON=$(gh api "/repos/${REPO}/pulls/$ISSUE_OR_PR_NUMBER/comments" --paginate || echo "FETCH_FAILED")
@@ -523,7 +512,6 @@ jobs:
           GH_TOKEN: ${{ env.WORKFLOW_TOKEN }}
           REPO: ${{ github.repository }}
           ISSUE_OR_PR_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }}
-        # ... (rest of step is unchanged)
         run: |
           echo "::group::Fetch Issue Details (Title, Body)"; set -e
           ISSUE_DATA_JSON=$(gh issue view "$ISSUE_OR_PR_NUMBER" --json title,body --repo "${REPO}" 2>/dev/null || echo 'FETCH_FAILED')
@@ -537,19 +525,19 @@ jobs:
           echo "::endgroup::"
 
       - name: Format - Assemble Final Prompt
-        id: format # Keep original ID for output mapping
+        id: format
         env:
           FINAL_CONTEXT_TYPE: ${{ env.FINAL_CONTEXT_TYPE }}
           ISSUE_OR_PR_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }}
           USER_REQUEST_BODY: ${{ env.USER_REQUEST_BODY }}
-          COMMENTS_XML: ${{ env.COMMENTS_XML }} # From format_fetch_comments
-          UPDATED_COMMENTS_XML: ${{ env.COMMENTS_XML_UPDATED }} # From format_pr_reviews
+          COMMENTS_XML: ${{ env.COMMENTS_XML }}
+          UPDATED_COMMENTS_XML: ${{ env.COMMENTS_XML_UPDATED }}
           PR_TITLE: ${{ env.PR_TITLE }}
           PR_BODY: ${{ env.PR_BODY }}
           FILTERED_PR_DIFF: ${{ env.FILTERED_PR_DIFF }}
           ISSUE_TITLE: ${{ env.ISSUE_TITLE }}
           ISSUE_BODY: ${{ env.ISSUE_BODY }}
-          DIRECT_USER_REQUEST_ENV: ${{ inputs.direct_user_request }} # Using different env var name to avoid conflict with USER_REQUEST_BODY
+          DIRECT_USER_REQUEST_ENV: ${{ inputs.direct_user_request }}
           MANUAL_INPUT_ENV: ${{ inputs.manual_input }}
           TRIGGERING_ACTOR_ENV: ${{ github.triggering_actor }}
           EVENT_NAME_ENV: ${{ github.event_name }}
@@ -620,7 +608,6 @@ jobs:
         id: determine_command
         env:
           PROBE_CHAT_COMMAND_SECRET: ${{ secrets.PROBE_CHAT_COMMAND }}
-        # ... (rest of step is unchanged)
         run: |
           COMMAND_VAR=""
           if [[ -n "${PROBE_CHAT_COMMAND_SECRET}" ]]; then COMMAND_VAR="${PROBE_CHAT_COMMAND_SECRET}";
@@ -664,7 +651,6 @@ jobs:
           FORCE_PROVIDER: ${{ secrets.FORCE_PROVIDER }}
           ALLOW_EDIT: ${{ inputs.allow_edit == true && '1' || '0' }}
           GH_TOKEN: ${{ env.WORKFLOW_TOKEN }} # For Aider or tools needing it
-        # ... (rest of script is largely unchanged, uses outputs from 'format' and 'determine_command')
         run: |
           if [[ -n "$ANTHROPIC_API_URL" ]]; then
             if [[ "$ANTHROPIC_API_URL" == */v1 ]]; then export ANTHROPIC_BASE_URL="${ANTHROPIC_API_URL%/v1}";
@@ -676,7 +662,7 @@ jobs:
           RESPONSE_FILE="response.txt"; ERROR_LOG="error.log"; COMMAND_TO_RUN="$COMMAND_BASE"
           if [[ -n "${{ inputs.prompt }}" ]]; then COMMAND_TO_RUN="$COMMAND_TO_RUN --prompt '${{ inputs.prompt }}'";
           else
-            CONTEXT_TYPE_FOR_PROMPT="${{ steps.format.outputs.context_type }}" # From 'format' step output
+            CONTEXT_TYPE_FOR_PROMPT="${{ steps.format.outputs.context_type }}"
             if [[ "$CONTEXT_TYPE_FOR_PROMPT" == "pr" ]]; then COMMAND_TO_RUN="$COMMAND_TO_RUN --prompt code-review";
             elif [[ "$CONTEXT_TYPE_FOR_PROMPT" == "issue" ]]; then COMMAND_TO_RUN="$COMMAND_TO_RUN --prompt support";
             fi
@@ -709,7 +695,6 @@ jobs:
           CONTEXT_TYPE: ${{ env.FINAL_CONTEXT_TYPE }} # From GITHUB_ENV (format_init)
           ISSUE_NUMBER: ${{ env.ISSUE_OR_PR_NUMBER }} # From GITHUB_ENV (format_init)
           # HEAD_REF_NAME is also in GITHUB_ENV if context was PR
-        # ... (rest of step is largely unchanged but ensure it uses env.CONTEXT_TYPE and env.ISSUE_NUMBER)
         run: |
           echo "::group::Handling Git Changes"; git config --global user.name "${{ inputs.git_user_name }}"; git config --global user.email "${{ inputs.git_user_email }}"
           CHECKED_OUT_BRANCH=$(git rev-parse --abbrev-ref HEAD); INITIAL_COMMIT=$(git rev-parse HEAD)
@@ -749,7 +734,6 @@ jobs:
           HAS_CHANGES: ${{ steps.handle_git.outputs.has_changes }}
           PR_URL: ${{ steps.handle_git.outputs.pr_url }}
           CONTEXT_TYPE: ${{ env.FINAL_CONTEXT_TYPE }} # From GITHUB_ENV (format_init)
-        # ... (rest of step logic unchanged, but relies on CONTEXT_TYPE from GITHUB_ENV)
         run: |
           set -e; RESPONSE_CONTENT=$(cat response.txt 2>/dev/null || echo ""); ERROR_LOG_CONTENT=$(cat error.log 2>/dev/null || echo ""); FINAL_BODY=""
           if [[ "$HAS_CHANGES" == "true" ]]; then
@@ -803,7 +787,7 @@ jobs:
       - name: Post Response Comment
         # This posts to the issue number determined by process_event,
         # which is now flexible enough for issue creation or comments.
-        if: needs.process_event.outputs.issue_number != '' # Only post if we have an issue number
+        if: needs.process_event.outputs.issue_number != ''
         uses: peter-evans/create-or-update-comment@v4
         with:
           token: ${{ env.WORKFLOW_TOKEN_POST }}
