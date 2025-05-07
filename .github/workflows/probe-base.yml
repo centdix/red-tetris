@@ -401,7 +401,6 @@ jobs:
       #     echo "issue_number=${{ steps.format_init.outputs.issue_number_for_job_output }}" >> $GITHUB_OUTPUT
       #     echo "context_type=${{ steps.format_init.outputs.context_type_for_job_output }}" >> $GITHUB_OUTPUT
 
-
       - name: Format - Fetch Standard Comments
         id: format_fetch_comments
         env:
@@ -492,7 +491,6 @@ jobs:
           elif [[ "$RAW_DIFF_CONTENT" == "FETCH_FAILED" ]]; then FILTERED_PR_DIFF="<!-- Error fetching diff -->"; fi
           echo "FILTERED_PR_DIFF<<EOF_PR_DIFF" >> $GITHUB_ENV; echo "$FILTERED_PR_DIFF" >> $GITHUB_ENV; echo "EOF_PR_DIFF" >> $GITHUB_ENV
           echo "::endgroup::"
-
 
       - name: Format - Fetch PR Review Comments & Bodies
         id: format_pr_reviews
@@ -787,7 +785,8 @@ jobs:
         if: steps.check_app_secrets_post.outputs.use_app_token == 'true'
         uses: actions/create-github-app-token@v1
         with:
-          app-id: ${{ secrets.APP_ID }}; private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Determine Workflow Token Post
         id: set_token_post # Renamed to avoid conflict with previous job's step ID if outputs were used across jobs
         run: |

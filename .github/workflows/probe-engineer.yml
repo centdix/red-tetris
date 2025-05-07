@@ -106,7 +106,7 @@ jobs:
     # Use the modified reusable workflow from your repository
     # Replace 'your-username/your-repo/.github/workflows/probe.yml@main'
     # with the actual path to your probe.yml, e.g., '.github/workflows/probe.yml@main' if in the same repo.
-    uses: .github/workflows/probe-base.yml # Correct path to your reusable workflow
+    uses: .github/workflows/probe-base.yml@master # Correct path to your reusable workflow with version specified
     # If probe.yml is in a different repository:
     # uses: owner/repo/.github/workflows/probe.yml@ref
 
