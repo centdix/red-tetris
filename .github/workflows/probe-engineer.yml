@@ -50,17 +50,17 @@ jobs:
           JSON_PAYLOAD=$(jq -n \
             --arg title "$ISSUE_TITLE" \
             --arg body "$ISSUE_BODY_CONTENT" \
-            '{ body: { issue_title: $title, issue_body: $body } }')
+            '{"body":{"issue_title":$title,"issue_body":$body}}')
 
           echo "::debug::Sending payload: $JSON_PAYLOAD"
 
           # Make the API call
           # Timeout values (e.g., --max-time 60) are good practice for external calls.
-          API_RESPONSE_WITH_CODE=$(curl -s -w "\n%{http_code}" -X POST "https://app.windmill.dev/api/r/test1245/issue-trigger \
+          API_RESPONSE_WITH_CODE=$(curl -s -w "\n%{http_code}" -X POST "https://app.windmill.dev/api/r/test1245/issue-trigger" \
             -H "Content-Type: application/json" \
             -H "Accept: application/json" \
             --data-binary "$JSON_PAYLOAD" \
-            --max-time 90) # Increased timeout for potentially longer API processing
+            --max-time 90)
 
           HTTP_CODE=$(echo "$API_RESPONSE_WITH_CODE" | tail -n1)
           API_RESPONSE_BODY=$(echo "$API_RESPONSE_WITH_CODE" | sed '$d')
