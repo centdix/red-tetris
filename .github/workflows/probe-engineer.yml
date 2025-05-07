@@ -1,0 +1,25 @@
+name: Probe Engineer Handler
+
+on:
+  issue_comment:
+    types: [created] # Trigger only on issue comments
+
+# Define permissions needed for the workflow
+permissions:
+  issues: write # To post comments
+  pull-requests: write # To potentially create/comment on PRs (depending on implement tool behavior)
+  contents: write # REQUIRED to allow code modifications
+
+jobs:
+  trigger_probe_implement:
+    # Use the reusable workflow
+    uses: buger/probe/.github/workflows/probe.yml@main
+    with:
+      # Define the command prefix
+      command_prefix: "/engineer" # Specific prefix for this persona
+      # --- Enable Editing ---
+      allow_edit: true # Explicitly allow code modifications
+      # --- Set AI Persona ---
+      prompt: engineer # Use the 'engineer' predefined prompt
+    secrets:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

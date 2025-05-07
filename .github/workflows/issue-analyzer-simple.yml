@@ -1,8 +1,8 @@
 name: Call External Issue Analyzer
 
-on:
-  issues:
-    types: [opened]
+# on:
+#   issues:
+#     types: [opened]
 
 permissions:
   issues: write # To post the comment back to the issue
