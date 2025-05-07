@@ -16,9 +16,33 @@ jobs:
         with:
           egress-policy: audit # TODO: Lock down to ONLY your API endpoint URL
 
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Full history for better analysis
+
+      - name: Install and Run Probe Search
+        id: probe_search
+        run: |
+          echo "Installing probe tool..."
+          curl -fsSL https://raw.githubusercontent.com/buger/probe/main/install.sh | bash
+
+          echo "Performing probe search for 'login' in repository root"
+          PROBE_RESULTS=$(probe search "login" --files-only ./ 2>&1 || echo "No results found")
+          echo "Search complete"
+
+          # Save results to file and output path for next step
+          echo "$PROBE_RESULTS" > probe_results.txt
+          echo "probe_results<<EOF" >> $GITHUB_OUTPUT
+          cat probe_results.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Extract Issue Data
         id: issue_data
         run: |
+          # Read probe results
+          PROBE_RESULTS=$(cat probe_results.txt)
+
           # Prepare JSON payload - ensure proper escaping for multiline body/title
           JSON_PAYLOAD=$(jq -n \
             --arg repo "${{ github.repository }}" \
@@ -26,7 +50,8 @@ jobs:
             --arg title "${{ github.event.issue.title }}" \
             --arg body "${{ github.event.issue.body }}" \
             --arg actor "${{ github.triggering_actor }}" \
-            '{body: {repository: $repo, issue_number: $num, issue_title: $title, issue_body: $body, triggering_actor: $actor}}')
+            --arg probe_results "$PROBE_RESULTS" \
+            '{body: {repository: $repo, issue_number: $num, issue_title: $title, issue_body: $body, triggering_actor: $actor, probe_results: $probe_results}}')
 
           echo "Payload prepared."
           # Output payload to a file for the next step
