@@ -142,7 +142,11 @@ class Game {
 	getInfo() {
 		return {
 			status: this.status,
-			players: this.players,
+			players: this.players.map(player => ({
+				id: player.id,
+				login: player.login,
+				score: player.score
+			})),
 			room: this.room,
 			mode: this.mode,
 			owner: this.owner,
